@@ -961,7 +961,7 @@
    Allow any form of partying, but
    - don't allow trading items that were found before an involved party member had joined the party
    - don't allow trading gold or items bought from shops. */
-#define IDDC_RESTRICTED_TRADING
+//#define IDDC_RESTRICTED_TRADING
 /* Addition for IDDC_RESTRICTED_TRADING:
    Only allow partying when already inside the IDDC, by erasing any party membership on entering it,
    except for the party owner.
@@ -1221,7 +1221,7 @@
 #define FORCE_DROPS_PROBABLE 50
 
 /* minimum time required to stay on current floor in order to get an extra feeling on next floor */
-#define TURNS_FOR_EXTRA_FEELING		(cfg.fps * 120)
+#define TURNS_FOR_EXTRA_FEELING		(cfg.fps * 30)
 
 /* Enable strict probability-travel prevention by NO_MAGIC floor flag, even in up/down direction? */
 //#define NOMAGIC_INHIBITS_LEVEL_PROBTRAVEL
