@@ -49,3 +49,12 @@ src/common/w_z_pack.c
 # TomeNET updater binaries
 src/updater/TomeNET-Updater.32b
 src/updater/TomeNET-Updater.64b
+
+# windows binaries
+*exe
+
+# other files
+*cfg
+*opt
+*dna
+*.pre_

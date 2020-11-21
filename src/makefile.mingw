@@ -152,21 +152,21 @@ MINGW_TARGET = i686-w64-mingw32
 # You may need to replace /usr/mingw32 by whatever prefix your
 # cross-compiling tools use.
 #
-SDL_CONFIG = /usr/$(MINGW_TARGET)/bin/sdl-config
+SDL_CONFIG = /usr/$(MINGW_TARGET)/sys-root/mingw/bin/sdl-config
 #SDL_CONFIG = /usr/$(MINGW_TARGET)/usr/bin/sdl-config
 
 #
 # Alternatively, specify include and lib paths for SDL
 #
-# mikaelh's system
-#SDL_INCLUDE_PATH = /usr/$(MINGW_TARGET)/usr/include/SDL
-#SDL_LIB_PATH = /usr/$(MINGW_TARGET)/usr/lib
+# tokariew's system
+SDL_INCLUDE_PATH = /usr/$(MINGW_TARGET)/sys-root/mingw/include/SDL
+SDL_LIB_PATH = /usr/$(MINGW_TARGET)/sys-root/mingw/lib
 
 # C. Blue's system
 #SDL_INCLUDE_PATH = /usr/$(MINGW_TARGET)/include/SDL
 #SDL_INCLUDE_PATH = `sdl-config --cflags` -I/usr/include
-SDL_INCLUDE_PATH = $(shell $(SDL_CONFIG) --cflags)
-SDL_LIB_PATH = $(shell $(SDL_CONFIG) --libs)
+#SDL_INCLUDE_PATH = $(shell $(SDL_CONFIG) --cflags)
+#SDL_LIB_PATH = $(shell $(SDL_CONFIG) --libs)
 
 ##
 ## Variation -- MinGW on Linux
@@ -185,9 +185,9 @@ LUALIBS = -lkernel32 -luser32 -lwsock32 -lgdi32 -lcomdlg32 -lwinmm
 #LIBS += -lSDL -lSDL_mixer `$(SDL_CONFIG) --libs`
 ##
 ## With SDL, without using 'sdl-config', entered SDL's include/lib folders manually above:
-CFLAGS += -DSOUND_SDL $(SDL_INCLUDE_PATH)
+#CFLAGS += -DSOUND_SDL $(SDL_INCLUDE_PATH)
 #LIBS += -lSDL -lSDL_mixer $(SDL_LIB_PATH)
-LIBS += $(SDL_LIB_PATH) -lSDL_mixer
+#LIBS += $(SDL_LIB_PATH) -lSDL_mixer
 
 # Security hardening
 # -pie seems to be broken
@@ -389,4 +389,3 @@ depend:
 # DO NOT ADD ANYTHING BELOW THIS LINE.
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-
