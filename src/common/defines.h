@@ -8057,7 +8057,7 @@ extern int PlayerUID;
 	   (get_skill(p_ptr, SKILL_DODGE)) || \
 	   (get_skill(p_ptr, SKILL_CRITS))) && \
 	 (armour_weight(p_ptr) > \
-	 200 + get_skill_scale(p_ptr, SKILL_COMBAT, 70)))
+	 200 + get_skill_scale(p_ptr, SKILL_COMBAT, 250)))
 
 /* maximum weapon weight to allow dual-wielding, 999 for no limit	[999] */
 #define DUAL_MAX_WEIGHT 999
