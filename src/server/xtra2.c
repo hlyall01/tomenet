@@ -26,15 +26,15 @@
  * cf. GHOST_FADING in dungeon.c
  */
 #ifdef ENABLE_INSTANT_RES
-#define GHOST_XP_LOST	35
+#define GHOST_XP_LOST	0
 #else
-#define GHOST_XP_LOST	40
+#define GHOST_XP_LOST	0
 #endif
 
 /*
  * What % of exp points will be lost on instant resurrection?
  */
-#define INSTANT_RES_XP_LOST	50
+#define INSTANT_RES_XP_LOST	0
 
 /*
  * Chance of an item teleporting away when player dies, in percent. [10]
@@ -45,7 +45,7 @@
 
 /* Chance of an item from the player's inventory getting lost (aka deleted)
    when player dies, in percent [20]. - C. Blue (limited to 4) */
-#define DEATH_PACK_ITEM_LOST	15
+#define DEATH_PACK_ITEM_LOST	0
 
 /* Chance of an item from the player's equipment getting lost (aka deleted)
    when player dies, in percent [10]. - C. Blue (limited to 1) */
@@ -6476,13 +6476,13 @@ bool monster_death(int Ind, int m_idx) {
 				p_ptr->r_mimicry[credit_idx] = r_info[credit_idx].level;
 			} else {
 				/* Normal form-learning process: +1 credit */
-				p_ptr->r_mimicry[credit_idx]++;
+				p_ptr->r_mimicry[credit_idx]+10;
 			}
 
 			/* (Note: There is no PvP mode on RPG-server) */
 #else
 			/* Normal form-learning process: +1 credit */
-			p_ptr->r_mimicry[credit_idx]++;
+			p_ptr->r_mimicry[credit_idx]+10;
 
 			/* PvP mode chars learn forms very quickly! */
 			if (pvp && bonus < 3) bonus = 3;
@@ -9141,12 +9141,13 @@ void player_death(int Ind) {
 			p_ptr->safe_sane = TRUE;
 
 			/* Lose some experience */
-			loss_factor = INSTANT_RES_XP_LOST;
+			loss_factor = 0;
+			
 			if (get_skill(p_ptr, SKILL_HCURING) >= 50
  #ifdef ENABLE_OCCULT /* Occult */
 			    || get_skill(p_ptr, SKILL_OSPIRIT) >= 50
  #endif
-			    ) loss_factor -= 5;
+			    ) loss_factor = 0;
 
 			reduce = p_ptr->max_exp;
 			reduce = reduce > 99999 ?
@@ -10236,7 +10237,7 @@ void resurrect_player(int Ind, int loss_factor) {
 	    || get_skill(p_ptr, SKILL_OSPIRIT) >= 50
 #endif
 	    ) loss_factor -= 5;
-	if (loss_factor < 30) loss_factor = 30;//hardcoded mess
+	if (loss_factor < 30) loss_factor = 0;//hardcoded mess
 
 	reduce = p_ptr->max_exp;
 	reduce = reduce > 99999 ?
