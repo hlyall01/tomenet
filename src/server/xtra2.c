@@ -6476,13 +6476,13 @@ bool monster_death(int Ind, int m_idx) {
 				p_ptr->r_mimicry[credit_idx] = r_info[credit_idx].level;
 			} else {
 				/* Normal form-learning process: +1 credit */
-				p_ptr->r_mimicry[credit_idx]+10;
+				p_ptr->r_mimicry[credit_idx]++;
 			}
 
 			/* (Note: There is no PvP mode on RPG-server) */
 #else
 			/* Normal form-learning process: +1 credit */
-			p_ptr->r_mimicry[credit_idx]+10;
+			p_ptr->r_mimicry[credit_idx]++;
 
 			/* PvP mode chars learn forms very quickly! */
 			if (pvp && bonus < 3) bonus = 3;
@@ -6494,7 +6494,7 @@ bool monster_death(int Ind, int m_idx) {
 				bonus = 2;
 
 			/* get bonus credit in Ironman Deep Dive Challenge */
-			if (in_iddc) {
+			if (1) {
 #ifndef IDDC_MIMICRY_BOOST
 				if (!bonus) bonus = 1;
 #else /* give a possibly greater boost than just +1 */
