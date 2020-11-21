@@ -10242,12 +10242,10 @@ void resurrect_player(int Ind, int loss_factor) {
 	reduce = p_ptr->max_exp;
 	reduce = reduce > 99999 ?
 	    reduce / 100 * loss_factor : reduce * loss_factor / 100;
-	p_ptr->max_exp -= reduce;
 
 	reduce = p_ptr->exp;
 	reduce = reduce > 99999 ?
 	    reduce / 100 * loss_factor : reduce * loss_factor / 100;
-	p_ptr->exp -= reduce;
 
 	/* Prevent cheezing exp to 0 to become eligible for certain events */
 	if (!p_ptr->max_exp && has_exp) p_ptr->exp = p_ptr->max_exp = 1;
