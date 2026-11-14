@@ -9346,8 +9346,7 @@ void do_slash_cmd(int Ind, char *message, char *message_u) {
 				else msg_print(Ind, "artifact generation is currently allowed");
 				return;
 			}
-#if 0 //not implemented
-			/* C. Blue's mad debug code to swap Minas Anor and Khazad-Dum on the worldmap :) */
+			/* Swap two towns' positions on the world map */
 			else if (prefix(messagelc, "/swap-towns")) {
 				int a = tk, b = atoi(token[2]);
 				int x, y;
@@ -9355,10 +9354,11 @@ void do_slash_cmd(int Ind, char *message, char *message_u) {
 
 				if (tk < 2) {
 					msg_print(Ind, "Usage: /swap-towns <town1> <town2>");
+					msg_format(Ind, "Where town1 and town2 are [0...%d], 1 is Bree.", numtowns - 1);
 					return;
 				}
 				if (a < 0 || a >= numtowns || b < 0 || b >= numtowns) {
-					msg_format(Ind, "Town numbers may range from 0 to %d.", numtowns - 1);
+					msg_format(Ind, "Town numbers may range from 0 to %d (1 is Bree).", numtowns - 1);
 					return;
 				}
 
@@ -9369,42 +9369,81 @@ void do_slash_cmd(int Ind, char *message, char *message_u) {
 				wpos2.wy = town[b].y;
 				wpos2.wz = 0;
 
- #if 0
-				for (x = wpos1.wx - wild_info[wpos1.wy][wpos1.wx].radius;
-				    x <= wpos1.wx + wild_info[wpos1.wy][wpos1.wx].radius; x++)
-				for (y = wpos1.wy - wild_info[wpos1.wy][wpos1.wx].radius;
-				    y <= wpos1.wy + wild_info[wpos1.wy][wpos1.wx].radius; y++)
-					if (in_bounds_wild(y, x) && (towndist(x, y) <= abs(wpos1.wx - x) + abs(wpos1.wy - y))) {
-						wild_info[wpos1.wy][wpos1.wx].radius = towndist(wpos1.wy, wpos1.wx);
-						wild_info[wpos1.wy][wpos1.wx].town_idx = wild_gettown(wpos1.wx, wpos1.wy);
-					}
- #endif
+#if 0				/* Process draft */
 
-				wild_info[wpos1.wy][wpos1.wx].type = WILD_UNDEFINED; /* re-generate */
-				wild_info[wpos1.wy][wpos1.wx].radius = towndist(wpos1.wy, wpos1.wx);
-				wild_info[wpos1.wy][wpos1.wx].town_idx = wild_gettown(wpos1.wx, wpos1.wy);
+				/*** Init the wild_info array... for more information see wilderness.c ***/
+				init_wild_info();
 
-				wild_info[wpos2.wy][wpos2.wx].type = WILD_UNDEFINED; /* re-generate */
-				wild_info[wpos2.wy][wpos2.wx].radius = towndist(wpos2.wy, wpos2.wx);
-				wild_info[wpos2.wy][wpos2.wx].town_idx = wild_gettown(wpos2.wx, wpos2.wy);
 
-//				wilderness_gen(&wpos1);
-//				wilderness_gen(&wpos2);
+				// ... actually swap the towns
+				/* Add town process draft */
 
 				town[numtowns].x = x;
 				town[numtowns].y = y;
 				town[numtowns].baselevel = base;
 				town[numtowns].flags = flags;
+				//town[numtowns].num_stores = MAX_BASE_STORES;
+				town[numtowns].num_stores = max_st_idx;
 				town[numtowns].type = type;
 				wild_info[y][x].type = WILD_TOWN;
 				wild_info[y][x].town_idx = numtowns;
 				wild_info[y][x].radius = base;
+				alloc_stores(numtowns);
+				/* Initialize the stores */
+				//for (n = 0; n < MAX_BASE_STORES; n++)
+				for (n = 0; n < max_st_idx; n++) {
+					/* make shop remember the town its in - C. Blue */
+					town[numtowns].townstore[n].town = numtowns;
+				}
 
-				addtown(y1, x1, town_profile[b + 1].dun_base, town_profile[b + 1].flags1, b + 1);
-				addtown(y2, x2, town_profile[a + 1].dun_base, town_profile[a + 1].flags1, a + 1);
+
+				/* Discard old dungeon index info */
+				//reindex_dungeons();
+				// ... actually swap town dungeon info
+				if (w_ptr->flags & WILD_F_UP) {
+					d_ptr = w_ptr->tower;
+					d_ptr->id = ++dungeon_id_max;
+
+					dungeon_visit_frequency[dungeon_id_max] = 0;
+					dungeon_x[dungeon_id_max] = x;
+					dungeon_y[dungeon_id_max] = y;
+					dungeon_tower[dungeon_id_max] = TRUE;
+					dungeon_ditype[dungeon_id_max] = d_ptr->type;
+
+					/* Initialize all dungeons at 'low rest bonus' */
+					set_dungeon_bonus(dungeon_id_max, TRUE);
+
+					s_printf("  indexed tower   at %d,%d: id = %d\n", x, y, dungeon_id_max);
+				}
+				if (w_ptr->flags & WILD_F_DOWN) {
+					d_ptr = w_ptr->dungeon;
+					d_ptr->id = ++dungeon_id_max;
+
+					dungeon_visit_frequency[dungeon_id_max] = 0;
+					dungeon_x[dungeon_id_max] = x;
+					dungeon_y[dungeon_id_max] = y;
+					dungeon_tower[dungeon_id_max] = FALSE;
+					dungeon_ditype[dungeon_id_max] = d_ptr->type;
+
+					/* Initialize all dungeons at 'low rest bonus' */
+					set_dungeon_bonus(dungeon_id_max, TRUE);
+
+					s_printf("  indexed dungeon at %d,%d: id = %d\n", x, y, dungeon_id_max);
+				}
+
+ #ifdef DUNGEON_VISIT_BONUS_DEPTHRANGE
+				//for (i = 0; i < 20; i++)
+				//	depthrange_visited[i] = 0;
+ #endif
+
+
+				/* Initialize wilderness 'level' */
+				init_wild_info_aux(0, 0);
+
+#endif
+
 				return;
 			}
-#endif
 			else if (prefix(messagelc, "/debug-towns")) {
 				msg_format(Ind, "numtowns = %d", numtowns);
 				for (i = 0; i < numtowns; i++) {
